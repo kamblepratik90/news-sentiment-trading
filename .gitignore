@@ -1,0 +1,297 @@
+# =============================================================================
+# News Sentiment Trading Signal Generator - .gitignore
+# =============================================================================
+
+# Environment Variables & Secrets
+# ================================
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.env
+config.json
+secrets.json
+
+# API Keys & Credentials
+# ======================
+*api_key*
+*secret*
+*token*
+credentials/
+keys/
+
+# Python
+# =======
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+# ====================
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+.ENV/
+pip-selfcheck.json
+
+# IDE & Editors
+# =============
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Operating System
+# ================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Data & Cache Files
+# ==================
+data/raw/*.csv
+data/processed/*.csv
+data/cache/
+*.pkl
+*.pickle
+cache/
+temp/
+tmp/
+
+# Model Files & Downloads
+# =======================
+models/
+*.model
+*.bin
+*.pt
+*.pth
+*.h5
+*.hdf5
+transformers_cache/
+huggingface_cache/
+
+# Logs & Debug Files
+# ==================
+*.log
+logs/
+debug/
+error.log
+debug.log
+app.log
+flask.log
+
+# Output & Results
+# ================
+results/
+output/
+exports/
+reports/*.html
+reports/*.pdf
+charts/
+plots/
+
+# Testing & Coverage
+# ==================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Jupyter Notebooks
+# ==================
+.ipynb_checkpoints/
+*.ipynb
+notebooks/checkpoints/
+
+# Flask Specific
+# ==============
+instance/
+.webassets-cache
+static/uploads/
+uploads/
+
+# Database Files
+# ==============
+*.db
+*.sqlite
+*.sqlite3
+
+# Documentation
+# =============
+docs/_build/
+site/
+
+# Backup Files
+# ============
+*.bak
+*.backup
+*.old
+*~
+
+# Temporary Files
+# ===============
+*.tmp
+*.temp
+.temporary/
+
+# Large Files & Media
+# ===================
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.mp4
+*.mp3
+*.avi
+*.mov
+
+# News Sentiment Specific
+# =======================
+# Cached news articles
+news_cache/
+articles_cache/
+
+# Generated visualizations
+visualizations/*.png
+visualizations/*.jpg
+visualizations/*.svg
+charts/*.png
+plots/*.pdf
+
+# Sentiment analysis results
+sentiment_results/
+analysis_output/
+
+# Trading signals cache
+signals_cache/
+trading_results/
+
+# Raw data downloads
+raw_news_data/
+downloaded_articles/
+
+# Model checkpoints
+checkpoints/
+model_saves/
+
+# Performance benchmarks
+benchmarks/
+performance_logs/
+
+# User uploaded files
+user_uploads/
+company_data/
+
+# Configuration backups
+config_backup/
+settings_backup/
+
+# Development & Testing
+# =====================
+# Test data
+test_data/
+mock_data/
+sample_data/
+
+# Development scripts
+dev_scripts/
+experimental/
+playground/
+
+# Local configuration
+local_config.py
+local_settings.py
+
+# Package Management
+# ==================
+pip-log.txt
+pip-delete-this-directory.txt
+.pip-cache/
+
+# Conda
+.conda/
+conda-meta/
+
+# Poetry
+poetry.lock
+
+# Node.js (if using any JS tools)
+# ================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+# ======
+.dockerignore
+Dockerfile.dev
+docker-compose.override.yml
+
+# Cloud & Deployment
+# ==================
+.gcloudignore
+.aws/
+.azure/
+.heroku/
+
+# Monitoring & Analytics
+# ======================
+.newrelic.ini
+newrelic.log
+
+# Security
+# ========
+.security/
+.secrets/
+private_keys/
+
+# Custom Application Specific
+# ============================
+# Any specific files for your app
+trading_signals_private/
+company_specific_configs/
+personal_watchlists/
+
+# =============================================================================
+# End of .gitignore
+# =============================================================================

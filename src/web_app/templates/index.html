@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Sentiment Trading Signal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            margin: 20px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .company-name {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(76, 175, 80, 0.3);
+            margin: 20px 0;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .analyze-btn:active {
+            transform: translateY(0);
+        }
+
+        .analyze-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-container {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #ecf0f1;
+        }
+
+        .signal-display {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .signal-buy {
+            color: #27ae60;
+            text-shadow: 2px 2px 4px rgba(39, 174, 96, 0.3);
+        }
+
+        .signal-sell {
+            color: #e74c3c;
+            text-shadow: 2px 2px 4px rgba(231, 76, 60, 0.3);
+        }
+
+        .signal-hold {
+            color: #f39c12;
+            text-shadow: 2px 2px 4px rgba(243, 156, 18, 0.3);
+        }
+
+        .signal-error {
+            color: #95a5a6;
+            font-size: 2em;
+        }
+
+        .confidence-display {
+            font-size: 1.5em;
+            color: #7f8c8d;
+            margin: 10px 0;
+        }
+
+        .details {
+            margin-top: 20px;
+            text-align: left;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .detail-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            background: #fadbd8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .timestamp {
+            color: #95a5a6;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+
+        .disclaimer {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            border-left: 4px solid #ffc107;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .signal-display {
+                font-size: 2.5em;
+            }
+            
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📈 Trading Signal Generator</h1>
+            <div class="company-name">Analyzing: <strong>{{ company_name }}</strong></div>
+            <p>Click the button below to fetch latest news, analyze sentiment, and generate trading signals</p>
+        </div>
+
+        <button id="analyzeBtn" class="analyze-btn" onclick="runAnalysis()">
+            🚀 Generate Trading Signal
+        </button>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Fetching news articles and analyzing sentiment...</p>
+            <p><small>This may take 30-60 seconds</small></p>
+        </div>
+
+        <div id="resultContainer" class="result-container">
+            <div id="signalDisplay" class="signal-display"></div>
+            <div id="confidenceDisplay" class="confidence-display"></div>
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            
+            <div id="details" class="details" style="display: none;">
+                <h3>📊 Analysis Details</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Total Articles</span>
+                        <span id="totalArticles" class="detail-value">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Positive Articles</span>
+                        <span id="positiveCount" class="detail-value">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Negative Articles</span>
+                        <span id="negativeCount" class="detail-value">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Neutral Articles</span>
+                        <span id="neutralCount" class="detail-value">-</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <span class="detail-label">Signal Methods Agreement:</span>
+                    <div style="margin-top: 10px;">
+                        <span>Basic: </span><span id="basicSignal" class="detail-value">-</span><br>
+                        <span>Weighted: </span><span id="weightedSignal" class="detail-value">-</span><br>
+                        <span>Time-Weighted: </span><span id="timeWeightedSignal" class="detail-value">-</span>
+                    </div>
+                </div>
+                
+                <div id="reasoning" style="margin-top: 15px; font-style: italic; color: #7f8c8d;"></div>
+            </div>
+            
+            <div id="timestamp" class="timestamp"></div>
+        </div>
+
+        <div class="disclaimer">
+            ⚠️ <strong>Disclaimer:</strong> This analysis is based solely on news sentiment and should not be considered as financial advice. 
+            Always consult with financial professionals and consider multiple factors before making investment decisions.
+        </div>
+    </div>
+
+    <script>
+        async function runAnalysis() {
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loading = document.getElementById('loading');
+            const resultContainer = document.getElementById('resultContainer');
+            const signalDisplay = document.getElementById('signalDisplay');
+            const confidenceDisplay = document.getElementById('confidenceDisplay');
+            const errorMessage = document.getElementById('errorMessage');
+            const details = document.getElementById('details');
+            const timestamp = document.getElementById('timestamp');
+
+            // Reset UI
+            analyzeBtn.disabled = true;
+            loading.style.display = 'block';
+            resultContainer.style.display = 'none';
+            errorMessage.style.display = 'none';
+            details.style.display = 'none';
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Display signal
+                    signalDisplay.textContent = result.signal;
+                    signalDisplay.className = 'signal-display signal-' + result.signal.toLowerCase();
+                    
+                    // Add emoji based on signal
+                    const emojis = {
+                        'BUY': '🟢 📈',
+                        'SELL': '🔴 📉',
+                        'HOLD': '🟡 ➡️'
+                    };
+                    signalDisplay.textContent = emojis[result.signal] + ' ' + result.signal;
+
+                    // Display confidence
+                    confidenceDisplay.textContent = `Confidence: ${(result.confidence * 100).toFixed(1)}%`;
+
+                    // Display details
+                    if (result.sentiment_breakdown) {
+                        document.getElementById('totalArticles').textContent = result.total_articles;
+                        document.getElementById('positiveCount').textContent = 
+                            `${result.sentiment_breakdown.positive_count} (${result.sentiment_breakdown.positive_percentage.toFixed(1)}%)`;
+                        document.getElementById('negativeCount').textContent = 
+                            `${result.sentiment_breakdown.negative_count} (${result.sentiment_breakdown.negative_percentage.toFixed(1)}%)`;
+                        document.getElementById('neutralCount').textContent = 
+                            `${result.sentiment_breakdown.neutral_count} (${result.sentiment_breakdown.neutral_percentage.toFixed(1)}%)`;
+                    }
+
+                    // Display signal methods
+                    if (result.signal_details) {
+                        document.getElementById('basicSignal').textContent = result.signal_details.basic_signal;
+                        document.getElementById('weightedSignal').textContent = result.signal_details.weighted_signal;
+                        document.getElementById('timeWeightedSignal').textContent = result.signal_details.time_weighted_signal;
+                    }
+
+                    // Display reasoning
+                    if (result.reasoning) {
+                        document.getElementById('reasoning').textContent = result.reasoning;
+                    }
+
+                    details.style.display = 'block';
+
+                } else {
+                    // Display error
+                    signalDisplay.textContent = result.signal || 'ERROR';
+                    signalDisplay.className = 'signal-display signal-error';
+                    errorMessage.textContent = result.error;
+                    errorMessage.style.display = 'block';
+                }
+
+                // Display timestamp
+                timestamp.textContent = `Analysis completed at: ${new Date().toLocaleString()}`;
+                resultContainer.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error:', error);
+                signalDisplay.textContent = 'CONNECTION ERROR';
+                signalDisplay.className = 'signal-display signal-error';
+                errorMessage.textContent = 'Failed to connect to the analysis service. Please try again.';
+                errorMessage.style.display = 'block';
+                resultContainer.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        // Auto-focus the button when page loads
+        window.onload = function() {
+            document.getElementById('analyzeBtn').focus();
+        };
+    </script>
+</body>
+</html>

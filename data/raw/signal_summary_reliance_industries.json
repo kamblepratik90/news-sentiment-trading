@@ -1,0 +1,75 @@
+{
+  "company": "Reliance Industries",
+  "analysis_date": "2025-08-06T00:25:19.503258",
+  "total_articles": 12,
+  "basic_signal": {
+    "signal": "HOLD",
+    "confidence": 0.425,
+    "reason": "Sentiment is mixed - positive: 7, negative: 4 (ratio: 1.8)",
+    "details": {
+      "total_articles": 12,
+      "positive_count": "7",
+      "negative_count": "4",
+      "neutral_count": "1",
+      "positive_percentage": 58.333333333333336,
+      "negative_percentage": 33.33333333333333,
+      "neutral_percentage": 8.333333333333332,
+      "positive_to_negative_ratio": 1.75,
+      "negative_to_positive_ratio": 0.5714285714285714,
+      "sentiment_column_used": "combined_sentiment_label"
+    },
+    "timestamp": "2025-08-06T00:25:05.687733"
+  },
+  "weighted_signal": {
+    "signal": "HOLD",
+    "confidence": 0.425,
+    "reason": "Sentiment is mixed - positive: 7, negative: 4 (ratio: 1.8)",
+    "details": {
+      "total_articles": 12,
+      "positive_count": "7",
+      "negative_count": "4",
+      "neutral_count": "1",
+      "positive_percentage": 58.333333333333336,
+      "negative_percentage": 33.33333333333333,
+      "neutral_percentage": 8.333333333333332,
+      "positive_to_negative_ratio": 1.75,
+      "negative_to_positive_ratio": 0.5714285714285714,
+      "sentiment_column_used": "combined_sentiment_label",
+      "weighted_positive_percentage": 60.01511966794624,
+      "weighted_negative_percentage": 35.01801893804414,
+      "weighted_neutral_percentage": 4.966861394009615,
+      "confidence_column_used": "combined_sentiment_confidence",
+      "total_confidence_weight": 11.053277611732483
+    },
+    "timestamp": "2025-08-06T00:25:05.689666"
+  },
+  "time_weighted_signal": {
+    "signal": "HOLD",
+    "confidence": 0.425,
+    "reason": "Sentiment is mixed - positive: 7, negative: 4 (ratio: 1.8)",
+    "details": {
+      "total_articles": 12,
+      "positive_count": "7",
+      "negative_count": "4",
+      "neutral_count": "1",
+      "positive_percentage": 58.333333333333336,
+      "negative_percentage": 33.33333333333333,
+      "neutral_percentage": 8.333333333333332,
+      "positive_to_negative_ratio": 1.75,
+      "negative_to_positive_ratio": 0.5714285714285714,
+      "sentiment_column_used": "combined_sentiment_label",
+      "weighted_positive_percentage": 60.01511966794624,
+      "weighted_negative_percentage": 35.01801893804414,
+      "weighted_neutral_percentage": 4.966861394009615,
+      "confidence_column_used": "combined_sentiment_confidence",
+      "total_confidence_weight": 11.053277611732483,
+      "time_weighted_positive_percentage": 58.333333333333336,
+      "time_weighted_negative_percentage": 33.33333333333333,
+      "recent_days_threshold": 7,
+      "articles_in_recent_period": 12
+    },
+    "timestamp": "2025-08-06T00:25:05.698683"
+  },
+  "consensus_signal": "HOLD",
+  "consensus_confidence": 0.425
+}

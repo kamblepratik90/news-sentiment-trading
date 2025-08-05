@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Sentiment Trading Signal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+            margin: 20px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .suggestions {
+            margin-top: 10px;
+        }
+
+        .suggestion-btn {
+            background: #ecf0f1;
+            border: none;
+            padding: 5px 10px;
+            margin: 3px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .suggestion-btn:hover {
+            background: #bdc3c7;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(76, 175, 80, 0.3);
+            margin: 30px 0 20px 0;
+            width: 100%;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .analyze-btn:active {
+            transform: translateY(0);
+        }
+
+        .analyze-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-container {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #ecf0f1;
+        }
+
+        .signal-display {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .signal-buy {
+            color: #27ae60;
+            text-shadow: 2px 2px 4px rgba(39, 174, 96, 0.3);
+        }
+
+        .signal-sell {
+            color: #e74c3c;
+            text-shadow: 2px 2px 4px rgba(231, 76, 60, 0.3);
+        }
+
+        .signal-hold {
+            color: #f39c12;
+            text-shadow: 2px 2px 4px rgba(243, 156, 18, 0.3);
+        }
+
+        .signal-error, .signal-no_data {
+            color: #95a5a6;
+            font-size: 2em;
+        }
+
+        .confidence-display {
+            font-size: 1.5em;
+            color: #7f8c8d;
+            margin: 10px 0;
+        }
+
+        .company-display {
+            font-size: 1.3em;
+            color: #2c3e50;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .details {
+            margin-top: 20px;
+            text-align: left;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .detail-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            background: #fadbd8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .timestamp {
+            color: #95a5a6;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+
+        .disclaimer {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            border-left: 4px solid #ffc107;
+        }
+
+        .help-text {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .signal-display {
+                font-size: 2.5em;
+            }
+            
+            .details-grid, .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📈 Trading Signal Generator</h1>
+            <div class="subtitle">Get AI-powered trading signals based on news sentiment analysis</div>
+        </div>
+
+        <div class="form-group">
+            <label for="companyInput" class="form-label">🏢 Company Name</label>
+            <input type="text" id="companyInput" class="form-input" 
+                   placeholder="Enter company name (e.g., Apple Inc, Tesla Inc, Microsoft Corporation)"
+                   value="{{ default_company }}">
+            <div class="help-text">Enter the full company name for best results</div>
+            
+            <div class="suggestions">
+                <div style="font-weight: bold; margin-bottom: 8px; font-size: 0.9em;">Popular Companies:</div>
+                <button class="suggestion-btn" onclick="selectCompany('Apple Inc')">Apple Inc</button>
+                <button class="suggestion-btn" onclick="selectCompany('Microsoft Corporation')">Microsoft</button>
+                <button class="suggestion-btn" onclick="selectCompany('Tesla Inc')">Tesla</button>
+                <button class="suggestion-btn" onclick="selectCompany('Amazon.com Inc')">Amazon</button>
+                <button class="suggestion-btn" onclick="selectCompany('Alphabet Inc')">Google</button>
+                <button class="suggestion-btn" onclick="selectCompany('Meta Platforms Inc')">Meta</button>
+                <button class="suggestion-btn" onclick="selectCompany('NVIDIA Corporation')">NVIDIA</button>
+                <button class="suggestion-btn" onclick="selectCompany('Netflix Inc')">Netflix</button>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="maxArticles" class="form-label">📰 Max Articles</label>
+                <input type="number" id="maxArticles" class="form-input" value="30" min="5" max="100">
+                <div class="help-text">5-100 articles (more articles = better analysis)</div>
+            </div>
+            <div class="form-group">
+                <label for="daysBack" class="form-label">📅 Days Back</label>
+                <input type="number" id="daysBack" class="form-input" value="30" min="1" max="90">
+                <div class="help-text">1-90 days (recent news has more weight)</div>
+            </div>
+        </div>
+
+        <button id="analyzeBtn" class="analyze-btn" onclick="runAnalysis()">
+            🚀 Generate Trading Signal
+        </button>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p><strong>Analyzing news sentiment...</strong></p>
+            <p id="loadingStep">Fetching news articles...</p>
+            <p><small>This may take 30-60 seconds</small></p>
+        </div>
+
+        <div id="resultContainer" class="result-container">
+            <div id="companyDisplay" class="company-display"></div>
+            <div id="signalDisplay" class="signal-display"></div>
+            <div id="confidenceDisplay" class="confidence-display"></div>
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            
+            <div id="details" class="details" style="display: none;">
+                <h3>📊 Analysis Details</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Total Articles</span>
+                        <span id="totalArticles" class="detail-value">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Positive Articles</span>
+                        <span id="positiveCount" class="detail-value">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Negative Articles</span>
+                        <span id="negativeCount" class="detail-value">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Neutral Articles</span>
+                        <span id="neutralCount" class="detail-value">-</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <span class="detail-label">Signal Methods Agreement:</span>
+                    <div style="margin-top: 10px;">
+                        <span>Basic: </span><span id="basicSignal" class="detail-value">-</span><br>
+                        <span>Weighted: </span><span id="weightedSignal" class="detail-value">-</span><br>
+                        <span>Time-Weighted: </span><span id="timeWeightedSignal" class="detail-value">-</span>
+                    </div>
+                </div>
+                
+                <div id="reasoning" style="margin-top: 15px; font-style: italic; color: #7f8c8d;"></div>
+            </div>
+            
+            <div id="timestamp" class="timestamp"></div>
+        </div>
+
+        <div class="disclaimer">
+            ⚠️ <strong>Disclaimer:</strong> This analysis is based solely on news sentiment and should not be considered as financial advice. 
+            Always consult with financial professionals and consider multiple factors before making investment decisions.
+        </div>
+    </div>
+
+    <script>
+        function selectCompany(companyName) {
+            document.getElementById('companyInput').value = companyName;
+        }
+
+        async function runAnalysis() {
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loading = document.getElementById('loading');
+            const loadingStep = document.getElementById('loadingStep');
+            const resultContainer = document.getElementById('resultContainer');
+            const signalDisplay = document.getElementById('signalDisplay');
+            const confidenceDisplay = document.getElementById('confidenceDisplay');
+            const companyDisplay = document.getElementById('companyDisplay');
+            const errorMessage = document.getElementById('errorMessage');
+            const details = document.getElementById('details');
+            const timestamp = document.getElementById('timestamp');
+
+            // Get form values
+            const companyName = document.getElementById('companyInput').value.trim();
+            const maxArticles = parseInt(document.getElementById('maxArticles').value) || 30;
+            const daysBack = parseInt(document.getElementById('daysBack').value) || 30;
+
+            // Validate inputs
+            if (!companyName) {
+                alert('Please enter a company name');
+                return;
+            }
+
+            // Reset UI
+            analyzeBtn.disabled = true;
+            loading.style.display = 'block';
+            resultContainer.style.display = 'none';
+            errorMessage.style.display = 'none';
+            details.style.display = 'none';
+
+            // Update loading steps
+            const loadingSteps = [
+                'Fetching news articles...',
+                'Analyzing sentiment...',
+                'Generating trading signals...',
+                'Finalizing results...'
+            ];
+
+            let stepIndex = 0;
+            const stepInterval = setInterval(() => {
+                if (stepIndex < loadingSteps.length) {
+                    loadingStep.textContent = loadingSteps[stepIndex];
+                    stepIndex++;
+                }
+            }, 15000); // Change step every 15 seconds
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        company_name: companyName,
+                        max_articles: maxArticles,
+                        days_back: daysBack
+                    })
+                });
+
+                const result = await response.json();
+
+                clearInterval(stepInterval);
+
+                if (result.success) {
+                    // Display company name
+                    companyDisplay.textContent = `Analysis for: ${result.company}`;
+
+                    // Display signal
+                    signalDisplay.textContent = result.signal;
+                    signalDisplay.className = 'signal-display signal-' + result.signal.toLowerCase();
+                    
+                    // Add emoji based on signal
+                    const emojis = {
+                        'BUY': '🟢 📈',
+                        'SELL': '🔴 📉',
+                        'HOLD': '🟡 ➡️',
+                        'NO_DATA': '⚪ ❓',
+                        'ERROR': '❌ ⚠️'
+                    };
+                    signalDisplay.textContent = emojis[result.signal] + ' ' + result.signal;
+
+                    // Display confidence
+                    confidenceDisplay.textContent = `Confidence: ${(result.confidence * 100).toFixed(1)}%`;
+
+                    // Display details
+                    if (result.sentiment_breakdown) {
+                        document.getElementById('totalArticles').textContent = result.total_articles;
+                        document.getElementById('positiveCount').textContent = 
+                            `${result.sentiment_breakdown.positive_count} (${result.sentiment_breakdown.positive_percentage.toFixed(1)}%)`;
+                        document.getElementById('negativeCount').textContent = 
+                            `${result.sentiment_breakdown.negative_count} (${result.sentiment_breakdown.negative_percentage.toFixed(1)}%)`;
+                        document.getElementById('neutralCount').textContent = 
+                            `${result.sentiment_breakdown.neutral_count} (${result.sentiment_breakdown.neutral_percentage.toFixed(1)}%)`;
+                    }
+
+                    // Display signal methods
+                    if (result.signal_details) {
+                        document.getElementById('basicSignal').textContent = result.signal_details.basic_signal;
+                        document.getElementById('weightedSignal').textContent = result.signal_details.weighted_signal;
+                        document.getElementById('timeWeightedSignal').textContent = result.signal_details.time_weighted_signal;
+                    }
+
+                    // Display reasoning
+                    if (result.reasoning) {
+                        document.getElementById('reasoning').textContent = result.reasoning;
+                    }
+
+                    details.style.display = 'block';
+
+                } else {
+                    // Display error
+                    companyDisplay.textContent = `Analysis for: ${result.company || companyName}`;
+                    signalDisplay.textContent = result.signal || 'ERROR';
+                    signalDisplay.className = 'signal-display signal-error';
+                    errorMessage.textContent = result.error;
+                    errorMessage.style.display = 'block';
+                    confidenceDisplay.textContent = '';
+                }
+
+                // Display timestamp
+                timestamp.textContent = `Analysis completed at: ${new Date().toLocaleString()}`;
+                resultContainer.style.display = 'block';
+
+            } catch (error) {
+                clearInterval(stepInterval);
+                console.error('Error:', error);
+                companyDisplay.textContent = `Analysis for: ${companyName}`;
+                signalDisplay.textContent = 'CONNECTION ERROR';
+                signalDisplay.className = 'signal-display signal-error';
+                errorMessage.textContent = 'Failed to connect to the analysis service. Please try again.';
+                errorMessage.style.display = 'block';
+                confidenceDisplay.textContent = '';
+                resultContainer.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        // Auto-focus the company input when page loads
+        window.onload = function() {
+            document.getElementById('companyInput').focus();
+            
+            // Allow Enter key to submit
+            document.getElementById('companyInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    runAnalysis();
+                }
+            });
+        };
+    </script>
+</body>
+</html>

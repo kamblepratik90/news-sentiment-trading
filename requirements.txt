@@ -1,0 +1,13 @@
+requests
+pandas
+nltk
+textblob
+python-dotenv
+numpy
+transformers
+torch
+datasets
+tokenizers
+matplotlib
+seaborn
+flask
