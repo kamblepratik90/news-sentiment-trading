@@ -91,19 +91,57 @@
             margin-top: 10px;
         }
 
+        .suggestions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ecf0f1;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+
+        .suggestions-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .suggestions-grid::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .suggestions-grid::-webkit-scrollbar-thumb {
+            background: #bdc3c7;
+            border-radius: 3px;
+        }
+
+        .suggestions-grid::-webkit-scrollbar-thumb:hover {
+            background: #95a5a6;
+        }
+
         .suggestion-btn {
-            background: #ecf0f1;
-            border: none;
-            padding: 5px 10px;
-            margin: 3px;
-            border-radius: 15px;
+            background: white;
+            border: 1px solid #dee2e6;
+            padding: 8px 10px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.3s ease;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .suggestion-btn:hover {
-            background: #bdc3c7;
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
         }
 
         .analyze-btn {
@@ -307,14 +345,24 @@
             
             <div class="suggestions">
                 <div style="font-weight: bold; margin-bottom: 8px; font-size: 0.9em;">Popular Companies:</div>
-                <button class="suggestion-btn" onclick="selectCompany('Apple Inc')">Apple Inc</button>
-                <button class="suggestion-btn" onclick="selectCompany('Microsoft Corporation')">Microsoft</button>
-                <button class="suggestion-btn" onclick="selectCompany('Tesla Inc')">Tesla</button>
-                <button class="suggestion-btn" onclick="selectCompany('Amazon.com Inc')">Amazon</button>
-                <button class="suggestion-btn" onclick="selectCompany('Alphabet Inc')">Google</button>
-                <button class="suggestion-btn" onclick="selectCompany('Meta Platforms Inc')">Meta</button>
-                <button class="suggestion-btn" onclick="selectCompany('NVIDIA Corporation')">NVIDIA</button>
-                <button class="suggestion-btn" onclick="selectCompany('Netflix Inc')">Netflix</button>
+                <div class="suggestions-grid">
+                    <button class="suggestion-btn" onclick="selectCompany('Apple Inc')">🍎 Apple</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Microsoft Corporation')">💻 Microsoft</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Tesla Inc')">🚗 Tesla</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Amazon.com Inc')">📦 Amazon</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Alphabet Inc')">🔍 Google</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Meta Platforms Inc')">👥 Meta</button>
+                    <button class="suggestion-btn" onclick="selectCompany('NVIDIA Corporation')">🎮 NVIDIA</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Netflix Inc')">🎬 Netflix</button>
+                    <button class="suggestion-btn" onclick="selectCompany('JPMorgan Chase')">🏦 JPMorgan</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Johnson & Johnson')">🏥 J&J</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Visa Inc')">💳 Visa</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Coca-Cola')">🥤 Coca-Cola</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Boeing')">✈️ Boeing</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Disney')">🏰 Disney</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Intel Corporation')">🔧 Intel</button>
+                    <button class="suggestion-btn" onclick="selectCompany('Reliance Industries')">🏭 Reliance</button>
+                </div>
             </div>
         </div>
 
