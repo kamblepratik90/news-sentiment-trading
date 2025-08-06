@@ -6,6 +6,8 @@ Transform news articles into actionable trading insights using advanced sentimen
 
 ![Trading Signal Demo](https://img.shields.io/badge/Status-Live-brightgreen) ![Python](https://img.shields.io/badge/Python-3.8+-blue) ![Flask](https://img.shields.io/badge/Flask-Web%20App-orange) ![AI](https://img.shields.io/badge/AI-Sentiment%20Analysis-purple)
 
+![1754453476611](image/README/1754453476611.png)
+
 ## 🌟 Features
 
 ### 🚀 **One-Click Analysis**
